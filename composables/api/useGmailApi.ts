@@ -10,7 +10,7 @@ export function useGmailApi() {
       throw new Error('Login to google first.')
 
     try {
-      const response = await useFetch<gapi.client.gmail.Message>(
+      return await $fetch<gapi.client.gmail.Message>(
         `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}`,
         {
           headers: {
@@ -18,14 +18,6 @@ export function useGmailApi() {
           }
         }
       )
-
-      if (response.status.value !== 'success')
-        throw new Error(response.error.value?.message)
-
-      if (!response.data.value)
-        return {}
-
-      return response.data.value
     }
     catch (error) {
       throw new Error(JSON.stringify(error))
@@ -37,7 +29,7 @@ export function useGmailApi() {
       throw new Error('Login to google first.')
 
     try {
-      const response = await useFetch<gapi.client.gmail.ListMessagesResponse>(
+      return await $fetch<gapi.client.gmail.ListMessagesResponse>(
         'https://gmail.googleapis.com/gmail/v1/users/me/messages',
         {
           headers: {
@@ -48,14 +40,6 @@ export function useGmailApi() {
           }
         }
       )
-
-      if (response.status.value !== 'success')
-        throw new Error(response.error.value?.message)
-
-      if (!response.data.value)
-        return {}
-
-      return response.data.value
     }
     catch (error) {
       throw new Error(JSON.stringify(error))

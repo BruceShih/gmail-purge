@@ -26,21 +26,26 @@ function onFilterUpdate(value: string): void {
 }
 async function onSearchClick() {
   const response = await api.list(searchQuery.value)
-  // eslint-disable-next-line no-console
-  console.log(response)
   mails.value = response.messages || []
   nextPageToken.value = response.nextPageToken || ''
 }
 </script>
 
 <template>
-  <button v-if="!isLoggedIn" :disabled="!isReady" @click="() => login()">
-    Login with Google
-  </button>
-  <br>
-  <MailFilter @update="onFilterUpdate" />
-  <button @click="onSearchClick">
-    Search
-  </button>
-  <MailList :messages="mails" />
+  <UContainer>
+    <h1 class="text-center mt-6 mb-3 text-4xl">
+      Gmail Purge
+    </h1>
+    <p class="text-center mb-8">
+      Purge your promotion mails in your gmail
+    </p>
+    <UButton v-if="!isLoggedIn" class="flex mx-auto" :disabled="!isReady" @click="() => login()">
+      Login with <UIcon class="w-12" name="i-logos-google" />
+    </UButton>
+    <template v-if="isLoggedIn">
+      <UDivider class="mb-6" />
+      <MailFilter @update="onFilterUpdate" @search="onSearchClick" />
+      <MailList :messages="mails" />
+    </template>
+  </UContainer>
 </template>

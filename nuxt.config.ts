@@ -18,10 +18,11 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/eslint-module',
     '@nuxt/ui',
-    'nuxt-vue3-google-signin'
+    'nuxt-vue3-google-signin',
+    '@vueuse/nuxt'
   ],
   ui: {
-    icons: ['lucide']
+    icons: ['lucide', 'logos']
   },
   googleSignIn: {
     clientId: process.env.NUXT_GAPI_CLIENT_ID || ''

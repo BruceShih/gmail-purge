@@ -6,40 +6,40 @@ const props = defineProps<{
 }>()
 
 const api = useGmailApi()
+const selected = ref<string[]>([])
+const columns = [{
+  key: 'id'
+}, {
+  key: 'snippet',
+  label: 'Snippet'
+}]
+const items = ref<gapi.client.gmail.Message[]>([])
 
-async function onViewMessageClick(id?: string) {
-  if (!id)
-    return
+onMounted(() => {
+  const promises: Promise<gapi.client.gmail.Message>[] = []
+  props.messages.map(async (message) => {
+    if (!message.id)
+      return
 
-  const response = await api.get(id)
-  // eslint-disable-next-line no-console
-  console.log(response)
-}
+    promises.push(api.get(message.id))
+  })
+
+  Promise.allSettled(promises).then((results) => {
+    items.value = results.map((result) => {
+      if (result.status === 'fulfilled') {
+        return {
+          id: result.value.id || '',
+          snippet: result.value.snippet || ''
+        }
+      }
+      else { return {} }
+    })
+  })
+})
 </script>
 
 <template>
-  <table>
-    <thead>
-      <tr>
-        <th>id</th>
-        <th>threadId</th>
-        <th>view</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="message in props.messages" :key="message.id">
-        <td>
-          {{ message.id }}
-        </td>
-        <td>
-          {{ message.threadId }}
-        </td>
-        <td>
-          <button @click="onViewMessageClick(message.id)">
-            View
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <UContainer>
+    <UTable v-model="selected" :columns="columns" :rows="items" />
+  </UContainer>
 </template>
