@@ -1,9 +1,22 @@
+import process from 'node:process'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV !== 'production' },
+  ssr: false,
+  runtimeConfig: {
+    public: {
+      gapiClientId: process.env.NUXT_GAPI_CLIENT_ID || ''
+    }
+  },
+  devServer: {
+    https: {
+      key: './localhost+2-key.pem',
+      cert: './localhost+2.pem'
+    }
+  },
   modules: [
     '@nuxtjs/eslint-module',
-    '@vueuse/nuxt',
     '@nuxt/ui',
     'nuxt-vue3-google-signin'
   ],
@@ -11,6 +24,6 @@ export default defineNuxtConfig({
     icons: ['lucide']
   },
   googleSignIn: {
-    clientId: '674563356111-l545qi51f8dnme6pf17n6a1pd3kacsjv.apps.googleusercontent.com',
+    clientId: process.env.NUXT_GAPI_CLIENT_ID || ''
   }
 })
