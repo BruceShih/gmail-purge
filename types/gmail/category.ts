@@ -1,1 +1,1 @@
-export type Category = 'primary' | 'social' | 'promotions' | 'updates' | 'forums' | 'reservations' | 'purchases'
+export type Category = 'social' | 'promotions' | 'forums'

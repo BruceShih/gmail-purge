@@ -5,6 +5,25 @@ export function useGmailApi() {
     token.value = value
   }
 
+  const labels = async () => {
+    if (!token.value)
+      throw new Error('Login to google first.')
+
+    try {
+      return await $fetch<gapi.client.gmail.Label[]>(
+        'https://gmail.googleapis.com/gmail/v1/users/me/labels',
+        {
+          headers: {
+            Authorization: `Bearer ${token.value}`
+          }
+        }
+      )
+    }
+    catch (error) {
+      throw new Error(JSON.stringify(error))
+    }
+  }
+
   const get = async (id: string) => {
     if (!token.value)
       throw new Error('Login to google first.')
@@ -46,6 +65,56 @@ export function useGmailApi() {
     }
   }
 
+  const modify = async (id: string, addLabelIds: string[] = [], removeLabelIds: string[] = ['UNREAD']) => {
+    if (!token.value)
+      throw new Error('Login to google first.')
+
+    try {
+      const response = await useFetch<gapi.client.gmail.Message>(
+        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/modify`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token.value}`
+          },
+          body: {
+            addLabelIds,
+            removeLabelIds
+          }
+        }
+      )
+
+      if (response.error.value)
+        throw new Error(response.error.value?.message)
+    }
+    catch (error) {
+      throw new Error(JSON.stringify(error))
+    }
+  }
+
+  const trash = async (id: string) => {
+    if (!token.value)
+      throw new Error('Login to google first.')
+
+    try {
+      const response = await useFetch<gapi.client.gmail.Message>(
+        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/trash`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token.value}`
+          }
+        }
+      )
+
+      if (response.error.value)
+        throw new Error(response.error.value?.message)
+    }
+    catch (error) {
+      throw new Error(JSON.stringify(error))
+    }
+  }
+
   const batchDelete = async (ids: string[]) => {
     if (!token.value)
       throw new Error('Login to google first.')
@@ -72,5 +141,5 @@ export function useGmailApi() {
     }
   }
 
-  return { setToken, get, list, batchDelete }
+  return { setToken, labels, get, list, modify, trash, batchDelete }
 }

@@ -3,36 +3,37 @@ import type { Age } from '~/types/gmail/age'
 import type { Category } from '~/types/gmail/category'
 import type { SearchQuery } from '~/types/gmail/searchQuery'
 
+const props = defineProps<{
+  loading: boolean
+}>()
+
 const emit = defineEmits<{
   update: [value: string]
   search: [value: void]
 }>()
 
 const allCategories = ref<Category[]>([
-  'primary',
   'social',
   'promotions',
-  'updates',
-  'forums',
-  'reservations',
-  'purchases'
+  'forums'
 ])
 const selectedCategory = ref<Category>('promotions')
 const ages = ref<Age[]>([
+  'none',
   '6m',
   '1y',
   '2y',
   '3y',
   '5y'
 ])
-const selectedAge = ref<Age>('1y')
+const selectedAge = ref<Age>('none')
 const isRead = ref(false)
 const searchQuery = reactive<SearchQuery>({
   isRead: false,
   category: 'promotions',
-  olderThan: '1y'
+  olderThan: 'none'
 })
-const queryString = ref<string>('is:unread category:promotions older_than:1y')
+const queryString = ref<string>(flattenSearchQuery())
 
 watchEffect(() => {
   searchQuery.isRead = isRead.value
@@ -49,7 +50,9 @@ function onSearchClick(event: MouseEvent): void {
 }
 
 function flattenSearchQuery(): string {
-  return `is:${searchQuery.isRead ? 'read' : 'unread'} category:${searchQuery.category} older_than:${searchQuery.olderThan}`
+  return `is:${searchQuery.isRead ? 'read' : 'unread'} \
+  category:${searchQuery.category} \
+  ${searchQuery.olderThan === 'none' ? '' : `older_than:${searchQuery.olderThan}`}`
 }
 </script>
 
@@ -62,7 +65,7 @@ function flattenSearchQuery(): string {
       <USelect v-model="selectedAge" :options="ages" />
     </UFormGroup>
     <UCheckbox v-model="isRead" class="mb-4" name="is-read" label="Read" />
-    <UButton @click="onSearchClick">
+    <UButton class="flex justify-end" :loading="props.loading" @click="onSearchClick">
       Search
     </UButton>
   </UContainer>
