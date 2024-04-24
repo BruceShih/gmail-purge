@@ -4,11 +4,6 @@ import process from 'node:process'
 export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV !== 'production' },
   ssr: false,
-  runtimeConfig: {
-    public: {
-      gapiClientId: process.env.NUXT_GAPI_CLIENT_ID || ''
-    }
-  },
   devServer: {
     https: {
       key: './localhost+2-key.pem',
