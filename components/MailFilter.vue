@@ -57,16 +57,14 @@ function flattenSearchQuery(): string {
 </script>
 
 <template>
-  <UContainer class="mb-6">
-    <UFormGroup class="mb-4" label="Category">
-      <USelect v-model="selectedCategory" :options="allCategories" />
-    </UFormGroup>
-    <UFormGroup class="mb-4" label="Age">
-      <USelect v-model="selectedAge" :options="ages" />
-    </UFormGroup>
-    <UCheckbox v-model="isRead" class="mb-4" name="is-read" label="Read" />
-    <UButton class="flex justify-end" :loading="props.loading" @click="onSearchClick">
-      Search
-    </UButton>
-  </UContainer>
+  <UFormGroup class="mb-4" label="Category">
+    <USelect v-model="selectedCategory" :options="allCategories" />
+  </UFormGroup>
+  <UFormGroup class="mb-4" label="Age">
+    <USelect v-model="selectedAge" :options="ages" />
+  </UFormGroup>
+  <UCheckbox v-model="isRead" class="mb-4" name="is-read" label="Read" />
+  <UButton class="flex justify-end mb-6" :loading="props.loading" @click="onSearchClick">
+    Search
+  </UButton>
 </template>

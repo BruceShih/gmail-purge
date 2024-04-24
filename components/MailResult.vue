@@ -2,6 +2,11 @@
 const props = defineProps<{
   total: number
   query: string
+  loading: boolean
+}>()
+
+const emit = defineEmits<{
+  execute: [value: 'trash' | 'delete']
 }>()
 
 const choices = [
@@ -10,14 +15,18 @@ const choices = [
 ]
 
 const choice = ref('trash')
+
+function onExecuteClick() {
+  emit('execute', choice.value as 'trash' | 'delete')
+}
 </script>
 
 <template>
-  <UContainer>
-    <UDivider class="mt-6 mb-4" />
-    <p class="mb-4">
-      Found {{ props.total }} mails
-    </p>
+  <UDivider class="mb-4" />
+  <p class="mb-4">
+    Found {{ props.total }} mails
+  </p>
+  <template v-if="props.total > 0">
     <UAlert
       icon="i-lucide-lightbulb"
       title="Copy the text below and paste it in Gmail's search box to view these mails"
@@ -33,8 +42,8 @@ const choice = ref('trash')
       What do you want to do?
     </p>
     <USelect v-model="choice" :options="choices" class="mb-4" />
-    <UButton class="flex justify-end">
+    <UButton :loading="loading" class="flex justify-end" @click="onExecuteClick">
       Execute
     </UButton>
-  </UContainer>
+  </template>
 </template>
