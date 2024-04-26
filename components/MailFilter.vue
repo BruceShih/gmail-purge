@@ -5,12 +5,15 @@ import type { SearchQuery } from '~/types/gmail/searchQuery'
 
 const props = defineProps<{
   loading: boolean
+  modelValue: SearchQuery
 }>()
 
 const emit = defineEmits<{
-  update: [value: string]
-  search: [value: void]
+  'update:modelValue': [value: SearchQuery]
+  'search': [value: void]
 }>()
+
+const data = useVModel(props, 'modelValue', emit)
 
 const allCategories = ref<Category[]>([
   'social',
@@ -28,31 +31,21 @@ const ages = ref<Age[]>([
 ])
 const selectedAge = ref<Age>('none')
 const isRead = ref(false)
-const searchQuery = reactive<SearchQuery>({
-  isRead: false,
-  category: 'promotions',
-  olderThan: 'none'
+const searchQuery = reactive<SearchQuery>(data.value)
+
+watch(isRead, (value) => {
+  searchQuery.isRead = value
 })
-const queryString = ref<string>(flattenSearchQuery())
-
-watchEffect(() => {
-  searchQuery.isRead = isRead.value
-  searchQuery.category = selectedCategory.value
-  searchQuery.olderThan = selectedAge.value
-
-  queryString.value = flattenSearchQuery()
-  emit('update', queryString.value)
+watch(selectedCategory, (value) => {
+  searchQuery.category = value
+})
+watch(selectedAge, (value) => {
+  searchQuery.olderThan = value
 })
 
 function onSearchClick(event: MouseEvent): void {
   event.preventDefault()
   emit('search')
-}
-
-function flattenSearchQuery(): string {
-  return `is:${searchQuery.isRead ? 'read' : 'unread'} \
-  category:${searchQuery.category} \
-  ${searchQuery.olderThan === 'none' ? '' : `older_than:${searchQuery.olderThan}`}`
 }
 </script>
 

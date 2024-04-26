@@ -2,14 +2,25 @@
 import type { AuthCodeFlowErrorResponse, AuthCodeFlowSuccessResponse } from 'vue3-google-signin'
 import { useGmailApi } from '~/composables/api/useGmailApi'
 import { notEmpty } from '~/helpers/filters'
+import { categoryMapping } from '~/types/gmail/category'
+import type { SearchQuery } from '~/types/gmail/searchQuery'
 
 const api = useGmailApi()
 const mails = ref<gapi.client.gmail.Message[]>([])
+const count = ref(0)
 const total = ref(0)
+const totalUnread = ref(0)
 const searchLoading = ref(false)
 const executeLoading = ref(false)
+const totalPages = ref(0)
+const pageSize = ref(500)
 const nextPageToken = ref('')
-const searchQuery = ref('')
+const searchQuery = reactive<SearchQuery>({
+  isRead: false,
+  category: 'promotions',
+  olderThan: 'none'
+})
+const searchQueryString = ref<string>(flattenSearchQuery())
 const showResult = ref(false)
 const isLoggedIn = ref(false)
 
@@ -21,29 +32,40 @@ const { isReady, login } = useTokenClient({
   scope: 'https://mail.google.com/'
 })
 
+watch(searchQuery, () => {
+  showResult.value = false
+  searchQueryString.value = flattenSearchQuery()
+})
+
 function handleOnSuccess(response: AuthCodeFlowSuccessResponse) {
   api.setToken(response.access_token)
+  api.setPageSize(pageSize.value)
+  // api.labels.list()
   isLoggedIn.value = true
 }
 
-function handleOnError(errorResponse: AuthCodeFlowErrorResponse): void {
+function handleOnError(errorResponse: AuthCodeFlowErrorResponse) {
+  toast.add({ title: 'Login failed', icon: 'i-lucide-x', color: 'red' })
   console.error('Error: ', errorResponse)
-}
-
-function onFilterUpdate(value: string): void {
-  searchQuery.value = value
 }
 
 async function onSearchClick() {
   try {
     showResult.value = true
     searchLoading.value = true
-    const response = await api.list(searchQuery.value)
-    mails.value = response.messages || []
-    nextPageToken.value = response.nextPageToken || ''
-    total.value = response.resultSizeEstimate || 0
+    const messageResponse = await api.messages.list(searchQueryString.value)
+    const labelResponse = await api.labels.get(categoryMapping[searchQuery.category])
+    mails.value = messageResponse.messages || []
+    count.value = mails.value.length
+    nextPageToken.value = messageResponse.nextPageToken || ''
+    total.value = searchQuery.isRead
+      ? (labelResponse.messagesTotal || 0) - (labelResponse.messagesUnread || 0)
+      : labelResponse.messagesUnread || 0
+    totalUnread.value = labelResponse.messagesUnread || 0
+    totalPages.value = Math.ceil(total.value / pageSize.value)
   }
   catch (error) {
+    toast.add({ title: 'Login failed', icon: 'i-lucide-x', color: 'red' })
     console.error(error)
   }
   finally {
@@ -57,9 +79,9 @@ async function onExecuteClick(value: 'trash' | 'delete') {
   try {
     executeLoading.value = true
     if (value === 'trash')
-      await api.batchModify(ids)
+      await api.messages.batchModify(ids)
     else
-      await api.batchDelete(ids)
+      await api.messages.batchDelete(ids)
 
     toast.add({
       title: 'Operation successful',
@@ -77,6 +99,12 @@ async function onExecuteClick(value: 'trash' | 'delete') {
   finally {
     executeLoading.value = false
   }
+}
+
+function flattenSearchQuery(): string {
+  return `is:${searchQuery.isRead ? 'read' : 'unread'} \
+  category:${searchQuery.category} \
+  ${searchQuery.olderThan === 'none' ? '' : `older_than:${searchQuery.olderThan}`}`
 }
 </script>
 
@@ -97,10 +125,15 @@ async function onExecuteClick(value: 'trash' | 'delete') {
       Login with <UIcon class="w-12" name="i-logos-google" />
     </UButton>
     <template v-if="isLoggedIn">
-      <MailFilter :loading="searchLoading" @update="onFilterUpdate" @search="onSearchClick" />
+      <MailFilter v-model="searchQuery" :loading="searchLoading" @search="onSearchClick" />
       <template v-if="showResult">
         <MailResult
-          v-if="!searchLoading" :loading="executeLoading" :total="total" :query="searchQuery"
+          v-if="!searchLoading"
+          :loading="executeLoading"
+          :count="count"
+          :total-count="total"
+          :total-pages="totalPages"
+          :query="searchQueryString"
           @execute="onExecuteClick"
         />
         <template v-else>
