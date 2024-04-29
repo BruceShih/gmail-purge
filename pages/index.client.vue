@@ -116,11 +116,6 @@ function flattenSearchQuery(): string {
     <p class="text-center mb-8">
       Purge your mails in your gmail inbox
     </p>
-    <UAlert
-      class="mb-4"
-      description="Site don't store or send any of user data, which means you have to login every time if you reload the site."
-      title="Note"
-    />
     <UButton v-if="!isLoggedIn" class="flex mx-auto" :disabled="!isReady" @click="() => login()">
       Login with <UIcon class="w-12" name="i-logos-google" />
     </UButton>
