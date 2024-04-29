@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  total: number
+  count: number
+  totalCount: number
+  totalPages: number
   query: string
   loading: boolean
 }>()
@@ -24,9 +26,9 @@ function onExecuteClick() {
 <template>
   <UDivider class="mb-4" />
   <p class="mb-4">
-    Found {{ props.total }} mails
+    Found {{ props.count }} of {{ props.totalCount }} mails in {{ props.totalPages }} {{ `page${props.totalPages > 1 ? 's' : ''}` }}
   </p>
-  <template v-if="props.total > 0">
+  <template v-if="props.count > 0">
     <UAlert
       icon="i-lucide-lightbulb"
       title="Copy the text below and paste it in Gmail's search box to view these mails"
