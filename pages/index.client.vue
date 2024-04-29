@@ -18,7 +18,7 @@ const nextPageToken = ref('')
 const searchQuery = reactive<SearchQuery>({
   isRead: false,
   category: 'promotions',
-  olderThan: 'none'
+  olderThan: 'all'
 })
 const searchQueryString = ref<string>(flattenSearchQuery())
 const showResult = ref(false)
@@ -104,13 +104,13 @@ async function onExecuteClick(value: 'trash' | 'delete') {
 function flattenSearchQuery(): string {
   return `is:${searchQuery.isRead ? 'read' : 'unread'} \
   category:${searchQuery.category} \
-  ${searchQuery.olderThan === 'none' ? '' : `older_than:${searchQuery.olderThan}`}`
+  ${searchQuery.olderThan === 'all' ? '' : `older_than:${searchQuery.olderThan}`}`
 }
 </script>
 
 <template>
-  <UContainer>
-    <h1 class="text-center mt-6 mb-3 text-4xl">
+  <UContainer class="p-6">
+    <h1 class="text-center mb-3 text-4xl">
       Gmail Purge
     </h1>
     <p class="text-center mb-8">

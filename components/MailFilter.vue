@@ -22,14 +22,14 @@ const allCategories = ref<Category[]>([
 ])
 const selectedCategory = ref<Category>('promotions')
 const ages = ref<Age[]>([
-  'none',
+  'all',
   '6m',
   '1y',
   '2y',
   '3y',
   '5y'
 ])
-const selectedAge = ref<Age>('none')
+const selectedAge = ref<Age>('all')
 const isRead = ref(false)
 const searchQuery = reactive<SearchQuery>(data.value)
 
