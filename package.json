@@ -3,6 +3,9 @@
   "type": "module",
   "private": true,
   "packageManager": "pnpm@9.0.5",
+  "description": "Purge your mails in your gmail inbox",
+  "author": "Bruce Shih",
+  "license": "MIT",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",

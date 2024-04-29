@@ -109,37 +109,35 @@ function flattenSearchQuery(): string {
 </script>
 
 <template>
-  <UContainer class="p-6">
-    <h1 class="text-center mb-3 text-4xl">
-      Gmail Purge
-    </h1>
-    <p class="text-center mb-8">
-      Purge your mails in your gmail inbox
-    </p>
-    <UButton v-if="!isLoggedIn" class="flex mx-auto" :disabled="!isReady" @click="() => login()">
-      Login with <UIcon class="w-12" name="i-logos-google" />
-    </UButton>
-    <template v-if="isLoggedIn">
-      <MailFilter v-model="searchQuery" :loading="searchLoading" @search="onSearchClick" />
-      <template v-if="showResult">
-        <MailResult
-          v-if="!searchLoading"
-          :loading="executeLoading"
-          :count="count"
-          :total-count="total"
-          :total-pages="totalPages"
-          :query="searchQueryString"
-          @execute="onExecuteClick"
-        />
-        <template v-else>
-          <USkeleton class="h-6 mb-4 w-full" />
-          <USkeleton class="h-28 w-full" />
-          <USkeleton class="h-10 w-full" />
-          <USkeleton class="h-6 mb-4 w-full" />
-          <USkeleton class="h-8 mb-4 w-full" />
-          <USkeleton class="h-8 mb-4 w-20" />
-        </template>
+  <h1 class="text-center mb-3 text-4xl">
+    Gmail Purge
+  </h1>
+  <p class="text-center mb-8">
+    Purge your mails in your gmail inbox
+  </p>
+  <UButton v-if="!isLoggedIn" class="flex mx-auto" :disabled="!isReady" @click="() => login()">
+    Login with <UIcon class="w-12" name="i-logos-google" />
+  </UButton>
+  <template v-if="isLoggedIn">
+    <MailFilter v-model="searchQuery" :loading="searchLoading" @search="onSearchClick" />
+    <template v-if="showResult">
+      <MailResult
+        v-if="!searchLoading"
+        :loading="executeLoading"
+        :count="count"
+        :total-count="total"
+        :total-pages="totalPages"
+        :query="searchQueryString"
+        @execute="onExecuteClick"
+      />
+      <template v-else>
+        <USkeleton class="h-6 mb-4 w-full" />
+        <USkeleton class="h-28 w-full" />
+        <USkeleton class="h-10 w-full" />
+        <USkeleton class="h-6 mb-4 w-full" />
+        <USkeleton class="h-8 mb-4 w-full" />
+        <USkeleton class="h-8 mb-4 w-20" />
       </template>
     </template>
-  </UContainer>
+  </template>
 </template>
