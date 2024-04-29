@@ -115,8 +115,16 @@ function flattenSearchQuery(): string {
   <p class="text-center mb-8">
     Purge your mails in your gmail inbox
   </p>
-  <UButton v-if="!isLoggedIn" class="flex mx-auto" :disabled="!isReady" @click="() => login()">
-    Login with <UIcon class="w-12" name="i-logos-google" />
+  <UButton
+    v-if="!isLoggedIn"
+    class="flex gap-0 mx-auto px-3 py-[10px]  bg-white dark:bg-[#131314] dark:text-[#e3e3e3] ring-[#747775]
+      ring-inset text-[#1f1f1f]"
+    color="white"
+    :disabled="!isReady"
+    @click="() => login()"
+  >
+    <UIcon class="w-5 h-5 mr-[10px]" name="i-logos-google-icon" />
+    <label class="text-sm text-left">Sign in with Google</label>
   </UButton>
   <template v-if="isLoggedIn">
     <MailFilter v-model="searchQuery" :loading="searchLoading" @search="onSearchClick" />
