@@ -14,12 +14,29 @@ export default defineNuxtConfig({
     '@nuxtjs/eslint-module',
     '@nuxt/ui',
     'nuxt-vue3-google-signin',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxtjs/i18n'
   ],
   ui: {
     icons: ['lucide', 'logos']
   },
   googleSignIn: {
     clientId: process.env.NUXT_GAPI_CLIENT_ID || ''
+  },
+  i18n: {
+    strategy: 'no_prefix',
+    locales: [
+      {
+        code: 'en',
+        name: 'English'
+      },
+      {
+        code: 'zh',
+        name: '繁體中文'
+      }
+    ],
+    detectBrowserLanguage: {
+      useCookie: false
+    }
   }
 })
