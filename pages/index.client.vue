@@ -6,6 +6,7 @@ import { useSearchQuery } from '~/composables/useSearchQuery'
 import { notEmpty } from '~/helpers/filters'
 import type { SearchQuery } from '~/types/gmail/searchQuery'
 
+const { t } = useI18n()
 const { isReady, login } = useTokenClient({
   onSuccess: handleOnSuccess,
   onError: handleOnError,
@@ -44,12 +45,12 @@ async function handleOnSuccess(response: AuthCodeFlowSuccessResponse) {
     labels.value = (await api.labels.list()).labels || []
   }
   catch (error) {
-    toast.show('Operation failed', 'error')
+    toast.show(t('errorOperation'), 'error')
     console.error(error)
   }
 }
 function handleOnError(errorResponse: AuthCodeFlowErrorResponse) {
-  toast.show('Login failed', 'error')
+  toast.show(t('errorLogin'), 'error')
   console.error('Error: ', errorResponse)
 }
 async function onSearchClick() {
@@ -68,7 +69,7 @@ async function onSearchClick() {
     totalPages.value = Math.ceil(total.value / pageSize.value)
   }
   catch (error) {
-    toast.show('Operation failed', 'error')
+    toast.show(t('errorOperation'), 'error')
     console.error(error)
   }
   finally {
@@ -85,11 +86,11 @@ async function onExecuteClick(value: 'trash' | 'delete') {
     else
       await api.messages.batchDelete(ids)
 
-    toast.show('Operation successful', 'success')
+    toast.show(t('successOperation'), 'success')
   }
   catch (error) {
     console.error(error)
-    toast.show('Operation failed', 'error')
+    toast.show(t('errorOperation'), 'error')
   }
   finally {
     executeLoading.value = false
@@ -100,10 +101,10 @@ async function onExecuteClick(value: 'trash' | 'delete') {
 
 <template>
   <h1 class="text-center mb-3 text-4xl">
-    Gmail Purge
+    {{ t('brand') }}
   </h1>
   <p class="text-center mb-8">
-    Purge your mails in your gmail inbox
+    {{ t('brandDescription') }}
   </p>
   <UButton
     v-if="!isLoggedIn"
@@ -114,7 +115,7 @@ async function onExecuteClick(value: 'trash' | 'delete') {
     @click="() => login()"
   >
     <UIcon class="w-5 h-5 mr-[10px]" name="i-logos-google-icon" />
-    <label class="text-sm text-left">Sign in with Google</label>
+    <label class="text-sm text-left">{{ t('signIn') }}</label>
   </UButton>
   <template v-if="isLoggedIn">
     <MailFilter v-model="query" :labels="labels" :loading="searchLoading" @search="onSearchClick" />
