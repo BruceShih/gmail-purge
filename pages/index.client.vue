@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AuthCodeFlowErrorResponse, AuthCodeFlowSuccessResponse } from 'vue3-google-signin'
+import { useCustomToast } from '~/composables/api/useCustomToast'
 import { useGmailApi } from '~/composables/api/useGmailApi'
 import { notEmpty } from '~/helpers/filters'
 import { categoryMapping } from '~/types/gmail/category'
@@ -24,7 +25,7 @@ const searchQueryString = ref<string>(flattenSearchQuery())
 const showResult = ref(false)
 const isLoggedIn = ref(false)
 
-const toast = useToast()
+const toast = useCustomToast()
 
 const { isReady, login } = useTokenClient({
   onSuccess: handleOnSuccess,
@@ -45,7 +46,7 @@ function handleOnSuccess(response: AuthCodeFlowSuccessResponse) {
 }
 
 function handleOnError(errorResponse: AuthCodeFlowErrorResponse) {
-  toast.add({ title: 'Login failed', icon: 'i-lucide-x', color: 'red' })
+  toast.show('Login failed', 'error')
   console.error('Error: ', errorResponse)
 }
 
@@ -65,7 +66,7 @@ async function onSearchClick() {
     totalPages.value = Math.ceil(total.value / pageSize.value)
   }
   catch (error) {
-    toast.add({ title: 'Login failed', icon: 'i-lucide-x', color: 'red' })
+    toast.show('Operation failed', 'error')
     console.error(error)
   }
   finally {
@@ -83,15 +84,11 @@ async function onExecuteClick(value: 'trash' | 'delete') {
     else
       await api.messages.batchDelete(ids)
 
-    toast.add({
-      title: 'Operation successful',
-      icon: 'i-lucide-check',
-      color: 'primary'
-    })
+    toast.show('Operation successful', 'success')
   }
   catch (error) {
     console.error(error)
-    toast.add({ title: 'Operation failed', icon: 'i-lucide-x', color: 'red' })
+    toast.show('Operation failed', 'error')
   }
   finally {
     executeLoading.value = false
