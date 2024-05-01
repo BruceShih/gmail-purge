@@ -93,6 +93,7 @@ async function onExecuteClick(value: 'trash' | 'delete') {
   }
   finally {
     executeLoading.value = false
+    showResult.value = false
   }
 }
 </script>
