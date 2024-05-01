@@ -11,12 +11,13 @@ const emit = defineEmits<{
   execute: [value: 'trash' | 'delete']
 }>()
 
-const choices = [
-  { value: 'trash', label: 'Mark all as read and move to trash' },
-  { value: 'delete', label: 'Delete all (cannot be undone)' }
-]
+const { t } = useI18n()
 
 const choice = ref('trash')
+const choices = reactive([
+  { value: 'trash', label: t('choiceTrash') },
+  { value: 'delete', label: t('choiceDelete') }
+])
 
 function onExecuteClick() {
   emit('execute', choice.value as 'trash' | 'delete')
@@ -26,12 +27,17 @@ function onExecuteClick() {
 <template>
   <UDivider class="mb-4" />
   <p class="mb-4">
-    Found {{ props.count }} of {{ props.totalCount }} mails in {{ props.totalPages }} {{ `page${props.totalPages > 1 ? 's' : ''}` }}
+    {{ t('searchResult', {
+      count: props.count,
+      totalCount: props.totalCount,
+      totalPages: props.totalPages,
+      pageCount: props.totalPages,
+    }) }}
   </p>
   <template v-if="props.count > 0">
     <UAlert
       icon="i-lucide-lightbulb"
-      title="Copy the text below and paste it in Gmail's search box to view these mails"
+      :title="t('tips')"
     >
       <template #description>
         <p class="mt-2">
@@ -41,11 +47,11 @@ function onExecuteClick() {
     </UAlert>
     <UDivider class="mt-6 mb-4" />
     <p class="mb-4">
-      What do you want to do?
+      {{ t('whatDoYouWant') }}
     </p>
     <USelect v-model="choice" :options="choices" class="mb-4" />
     <UButton :loading="loading" class="flex justify-end" @click="onExecuteClick">
-      Execute
+      {{ t('execute') }}
     </UButton>
   </template>
 </template>

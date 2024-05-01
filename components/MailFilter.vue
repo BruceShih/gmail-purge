@@ -14,6 +14,7 @@ const emit = defineEmits<{
   'search': [value: void]
 }>()
 
+const { t } = useI18n()
 const searchQuery = useSearchQuery()
 const data = useVModel(props, 'modelValue', emit)
 
@@ -64,14 +65,14 @@ function capitalizeFirstLetter(str: string) {
 </script>
 
 <template>
-  <UFormGroup class="mb-4" label="Category">
+  <UFormGroup class="mb-4" :label="t('category')">
     <USelect v-model="selectedCategory" :options="allCategories" option-attribute="name" />
   </UFormGroup>
-  <UFormGroup class="mb-4" label="Age">
+  <UFormGroup class="mb-4" :label="t('age')">
     <USelect v-model="selectedAge" :options="ages" />
   </UFormGroup>
-  <UCheckbox v-model="isRead" class="mb-4" name="is-read" label="Read" />
+  <UCheckbox v-model="isRead" class="mb-4" name="is-read" :label="t('read')" />
   <UButton class="flex justify-end mb-6" :loading="props.loading" @click="onSearchClick">
-    Search
+    {{ t('search') }}
   </UButton>
 </template>
