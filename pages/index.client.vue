@@ -86,10 +86,7 @@ async function onExecuteClick(value: 'trash' | 'delete') {
     toast.add({
       title: 'Operation successful',
       icon: 'i-lucide-check',
-      color: 'primary',
-      callback: () => {
-        reloadNuxtApp()
-      }
+      color: 'primary'
     })
   }
   catch (error) {
