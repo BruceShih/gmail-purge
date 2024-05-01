@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import type { AuthCodeFlowErrorResponse, AuthCodeFlowSuccessResponse } from 'vue3-google-signin'
+import { useCustomToast } from '~/composables/useCustomToast'
 import { useGmailApi } from '~/composables/api/useGmailApi'
+import { useSearchQuery } from '~/composables/useSearchQuery'
 import { notEmpty } from '~/helpers/filters'
-import { categoryMapping } from '~/types/gmail/category'
 import type { SearchQuery } from '~/types/gmail/searchQuery'
 
+const { isReady, login } = useTokenClient({
+  onSuccess: handleOnSuccess,
+  onError: handleOnError,
+  scope: 'https://mail.google.com/'
+})
 const api = useGmailApi()
+const toast = useCustomToast()
+const searchQuery = useSearchQuery()
+
+const labels = ref<gapi.client.gmail.Label[]>([])
 const mails = ref<gapi.client.gmail.Message[]>([])
 const count = ref(0)
 const total = ref(0)
@@ -15,64 +25,56 @@ const executeLoading = ref(false)
 const totalPages = ref(0)
 const pageSize = ref(500)
 const nextPageToken = ref('')
-const searchQuery = reactive<SearchQuery>({
-  isRead: false,
-  category: 'promotions',
-  olderThan: 'all'
-})
-const searchQueryString = ref<string>(flattenSearchQuery())
+const query = reactive<SearchQuery>(searchQuery.defaultSearchQuery)
+const searchQueryString = ref(searchQuery.toString(query))
 const showResult = ref(false)
 const isLoggedIn = ref(false)
 
-const toast = useToast()
-
-const { isReady, login } = useTokenClient({
-  onSuccess: handleOnSuccess,
-  onError: handleOnError,
-  scope: 'https://mail.google.com/'
-})
-
-watch(searchQuery, () => {
+watch(query, () => {
   showResult.value = false
-  searchQueryString.value = flattenSearchQuery()
+  searchQueryString.value = searchQuery.toString(query)
 })
 
-function handleOnSuccess(response: AuthCodeFlowSuccessResponse) {
+async function handleOnSuccess(response: AuthCodeFlowSuccessResponse) {
   api.setToken(response.access_token)
   api.setPageSize(pageSize.value)
-  // api.labels.list()
   isLoggedIn.value = true
-}
 
+  try {
+    labels.value = (await api.labels.list()).labels || []
+  }
+  catch (error) {
+    toast.show('Operation failed', 'error')
+    console.error(error)
+  }
+}
 function handleOnError(errorResponse: AuthCodeFlowErrorResponse) {
-  toast.add({ title: 'Login failed', icon: 'i-lucide-x', color: 'red' })
+  toast.show('Login failed', 'error')
   console.error('Error: ', errorResponse)
 }
-
 async function onSearchClick() {
   try {
     showResult.value = true
     searchLoading.value = true
     const messageResponse = await api.messages.list(searchQueryString.value)
-    const labelResponse = await api.labels.get(categoryMapping[searchQuery.category])
+    const labelResponse = await api.labels.get(query.category.id || '')
     mails.value = messageResponse.messages || []
     count.value = mails.value.length
     nextPageToken.value = messageResponse.nextPageToken || ''
-    total.value = searchQuery.isRead
+    total.value = query.isRead
       ? (labelResponse.messagesTotal || 0) - (labelResponse.messagesUnread || 0)
       : labelResponse.messagesUnread || 0
     totalUnread.value = labelResponse.messagesUnread || 0
     totalPages.value = Math.ceil(total.value / pageSize.value)
   }
   catch (error) {
-    toast.add({ title: 'Login failed', icon: 'i-lucide-x', color: 'red' })
+    toast.show('Operation failed', 'error')
     console.error(error)
   }
   finally {
     searchLoading.value = false
   }
 }
-
 async function onExecuteClick(value: 'trash' | 'delete') {
   const ids = mails.value.map(mail => mail.id || '').filter(id => notEmpty(id))
 
@@ -83,28 +85,15 @@ async function onExecuteClick(value: 'trash' | 'delete') {
     else
       await api.messages.batchDelete(ids)
 
-    toast.add({
-      title: 'Operation successful',
-      icon: 'i-lucide-check',
-      color: 'primary',
-      callback: () => {
-        reloadNuxtApp()
-      }
-    })
+    toast.show('Operation successful', 'success')
   }
   catch (error) {
     console.error(error)
-    toast.add({ title: 'Operation failed', icon: 'i-lucide-x', color: 'red' })
+    toast.show('Operation failed', 'error')
   }
   finally {
     executeLoading.value = false
   }
-}
-
-function flattenSearchQuery(): string {
-  return `is:${searchQuery.isRead ? 'read' : 'unread'} \
-  category:${searchQuery.category} \
-  ${searchQuery.olderThan === 'all' ? '' : `older_than:${searchQuery.olderThan}`}`
 }
 </script>
 
@@ -127,7 +116,7 @@ function flattenSearchQuery(): string {
     <label class="text-sm text-left">Sign in with Google</label>
   </UButton>
   <template v-if="isLoggedIn">
-    <MailFilter v-model="searchQuery" :loading="searchLoading" @search="onSearchClick" />
+    <MailFilter v-model="query" :labels="labels" :loading="searchLoading" @search="onSearchClick" />
     <template v-if="showResult">
       <MailResult
         v-if="!searchLoading"
