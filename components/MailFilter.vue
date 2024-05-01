@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import { useSearchQuery } from '~/composables/useSearchQuery'
 import type { Age } from '~/types/gmail/age'
-import type { Category } from '~/types/gmail/category'
 import type { SearchQuery } from '~/types/gmail/searchQuery'
 
 const props = defineProps<{
+  labels: gapi.client.gmail.Label[]
   loading: boolean
   modelValue: SearchQuery
 }>()
@@ -13,14 +14,10 @@ const emit = defineEmits<{
   'search': [value: void]
 }>()
 
+const searchQuery = useSearchQuery()
 const data = useVModel(props, 'modelValue', emit)
 
-const allCategories = ref<Category[]>([
-  'social',
-  'promotions',
-  'forums'
-])
-const selectedCategory = ref<Category>('promotions')
+const selectedCategory = ref(searchQuery.defaultSearchQuery.category.id)
 const ages = ref<Age[]>([
   'all',
   '6m',
@@ -31,27 +28,44 @@ const ages = ref<Age[]>([
 ])
 const selectedAge = ref<Age>('all')
 const isRead = ref(false)
-const searchQuery = reactive<SearchQuery>(data.value)
+const query = reactive<SearchQuery>(data.value)
+
+const allCategories = computed(() => {
+  const excludedCategories = ['CHAT', 'SENT', 'INBOX', 'IMPORTANT', 'TRASH', 'DRAFT', 'SPAM', 'STARRED', 'UNREAD']
+  return props.labels
+    .filter(label => !excludedCategories.includes(label.id || ''))
+    .map((label) => {
+      return {
+        name: capitalizeFirstLetter((label.name || '').toLowerCase().replace('category_', '')),
+        value: label.id || ''
+      }
+    })
+})
 
 watch(isRead, (value) => {
-  searchQuery.isRead = value
+  query.isRead = value
 })
 watch(selectedCategory, (value) => {
-  searchQuery.category = value
+  const category = props.labels.find(l => l.id === value)
+  if (category)
+    query.category = category
 })
 watch(selectedAge, (value) => {
-  searchQuery.olderThan = value
+  query.olderThan = value
 })
 
 function onSearchClick(event: MouseEvent): void {
   event.preventDefault()
   emit('search')
 }
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 </script>
 
 <template>
   <UFormGroup class="mb-4" label="Category">
-    <USelect v-model="selectedCategory" :options="allCategories" />
+    <USelect v-model="selectedCategory" :options="allCategories" option-attribute="name" />
   </UFormGroup>
   <UFormGroup class="mb-4" label="Age">
     <USelect v-model="selectedAge" :options="ages" />

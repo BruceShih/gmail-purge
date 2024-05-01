@@ -1,8 +1,7 @@
 import type { Age } from './age'
-import type { Category } from './category'
 
 export interface SearchQuery {
   isRead: boolean
-  category: Category
+  category: gapi.client.gmail.Label
   olderThan: Age
 }

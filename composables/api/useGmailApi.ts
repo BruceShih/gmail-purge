@@ -34,7 +34,7 @@ export function useGmailApi() {
         throw new Error('Login to google first.')
 
       try {
-        return await $fetch<gapi.client.gmail.Label[]>(
+        return await $fetch<gapi.client.gmail.ListLabelsResponse>(
           'https://gmail.googleapis.com/gmail/v1/users/me/labels',
           {
             headers: {
