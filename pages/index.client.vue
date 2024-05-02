@@ -42,7 +42,10 @@ async function handleOnSuccess(response: AuthCodeFlowSuccessResponse) {
   isLoggedIn.value = true
 
   try {
-    labels.value = (await api.labels.list()).labels || []
+    const response = await api.labels.list()
+    const filteredLabels = response.labels?.filter(label => label.type !== 'user')
+    if (filteredLabels)
+      labels.value = filteredLabels
   }
   catch (error) {
     toast.show(t('errorOperation'), 'error')
