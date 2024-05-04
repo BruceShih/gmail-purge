@@ -24,15 +24,19 @@ export default defineNuxtConfig({
     clientId: process.env.NUXT_GAPI_CLIENT_ID || ''
   },
   i18n: {
+    defaultLocale: 'en',
+    langDir: 'locales',
     strategy: 'no_prefix',
     locales: [
       {
         code: 'en',
-        name: 'English'
+        name: 'English',
+        file: 'en.json'
       },
       {
         code: 'zh',
-        name: '繁體中文'
+        name: '繁體中文',
+        file: 'zh.json'
       }
     ],
     detectBrowserLanguage: {

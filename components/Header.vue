@@ -25,7 +25,7 @@ function changeLanguage(code: string) {
 </script>
 
 <template>
-  <UContainer class="h-24 flex justify-end items-center sticky">
+  <UContainer class="w-full h-24 flex justify-end items-center sticky">
     <UButton
       :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
       size="lg"
