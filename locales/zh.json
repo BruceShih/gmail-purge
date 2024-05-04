@@ -1,0 +1,18 @@
+{
+  "brand": "Gmail Purge",
+  "brandDescription": "快速清除你的 Gmail 信箱",
+  "signIn": "使用 Google 登入",
+  "category": "標籤",
+  "age": "時間",
+  "read": "已讀",
+  "search": "搜尋",
+  "searchResult": "找到 {count} 封信，總共 {totalCount} 封信。共 1 頁。 | 找到 {count} 封信，總共 {totalCount} 封信。共 {pageCount} 頁。",
+  "tips": "複製下方的指令到 Gmail 搜尋欄中貼上查看詳細搜尋結果",
+  "whatDoYouWant": "請選擇要如何操作",
+  "choiceTrash": "標記成已讀並移動到垃圾桶",
+  "choiceDelete": "刪除（無法復原）",
+  "execute": "執行",
+  "errorLogin": "登入失敗",
+  "errorOperation": "操作失敗",
+  "successOperation": "操作成功"
+}

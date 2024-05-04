@@ -1,0 +1,18 @@
+{
+  "brand": "Gmail Purge",
+  "brandDescription": "Purge your mails in your gmail inbox",
+  "signIn": "Sign in with Google",
+  "category": "Category",
+  "age": "Age",
+  "read": "Read",
+  "search": "Search",
+  "searchResult": "Found {count} of {totalCount} mails in 1 page | Found {count} of {totalCount} mails in {pageCount} pages",
+  "tips": "Copy the text below and paste it in Gmail's search box to view these mails",
+  "whatDoYouWant": "What do you want to do?",
+  "choiceTrash": "Mark all as read and move to trash",
+  "choiceDelete": "Delete all (cannot be undone)",
+  "execute": "Execute",
+  "errorLogin": "Login failed",
+  "errorOperation": "Operation failed",
+  "successOperation": "Operation successful"
+}
