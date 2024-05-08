@@ -17,23 +17,23 @@
   "dependencies": {
     "@nuxtjs/i18n": "^8.3.1",
     "nuxt": "^3.11.2",
-    "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue": "^3.4.27",
+    "vue-router": "^4.3.2"
   },
   "devDependencies": {
-    "@bruceshih/eslint-config-vue": "^1.2.0",
-    "@googleapis/gmail": "^9.0.0",
+    "@bruceshih/eslint-config-vue": "^1.4.0",
+    "@googleapis/gmail": "^9.2.0",
     "@iconify-json/logos": "^1.1.42",
-    "@iconify-json/lucide": "^1.1.180",
-    "@nuxt/ui": "^2.15.2",
+    "@iconify-json/lucide": "^1.1.187",
+    "@nuxt/ui": "^2.16.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@types/gapi.client.gmail-v1": "^0.0.4",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
-    "eslint": "^9.0.0",
-    "eslint-plugin-format": "^0.1.0",
+    "eslint": "^9.2.0",
+    "eslint-plugin-format": "^0.1.1",
     "nuxt-vue3-google-signin": "^0.0.11",
     "vue3-google-signin": "^1.3.5",
-    "zod": "^3.22.4"
+    "zod": "^3.23.7"
   }
 }
