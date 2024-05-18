@@ -2,7 +2,7 @@
   "name": "gmail-purge",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.1.1",
   "description": "Purge your mails in your gmail inbox",
   "author": "Bruce Shih",
   "license": "MIT",
