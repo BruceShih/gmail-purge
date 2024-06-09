@@ -2,7 +2,7 @@
   "name": "gmail-purge",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@9.1.4",
+  "packageManager": "pnpm@9.2.0",
   "description": "Purge your mails in your gmail inbox",
   "author": "Bruce Shih",
   "license": "MIT",
@@ -21,10 +21,10 @@
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
-    "@bruceshih/eslint-config-vue": "^1.7.0",
+    "@bruceshih/eslint-config-vue": "^1.7.1",
     "@googleapis/gmail": "^9.2.0",
-    "@iconify-json/logos": "^1.1.42",
-    "@iconify-json/lucide": "^1.1.189",
+    "@iconify-json/logos": "^1.1.43",
+    "@iconify-json/lucide": "^1.1.190",
     "@nuxt/ui": "^2.16.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@types/gapi.client.gmail-v1": "^0.0.4",
