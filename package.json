@@ -16,15 +16,15 @@
   },
   "dependencies": {
     "@nuxtjs/i18n": "^8.3.1",
-    "nuxt": "^3.12.3",
-    "vue": "^3.4.32",
+    "nuxt": "^3.12.4",
+    "vue": "^3.4.33",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
-    "@bruceshih/eslint-config-vue": "^1.8.2",
+    "@bruceshih/eslint-config-vue": "^1.8.3",
     "@googleapis/gmail": "^9.2.0",
     "@iconify-json/logos": "^1.1.43",
-    "@iconify-json/lucide": "^1.1.200",
+    "@iconify-json/lucide": "^1.1.201",
     "@nuxt/ui": "^2.17.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@types/gapi.client.gmail-v1": "^0.0.4",
